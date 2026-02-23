@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Agenda de Contatos</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    padding: 20px;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+h1 {
+    text-align: center;
+}
+
+input {
+    padding: 8px;
+    margin: 5px;
+}
+
+button {
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn-cadastrar {
+    background-color: green;
+    color: white;
+}
+
+.btn-alterar {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-excluir {
+    background-color: red;
+    color: white;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background-color: #222;
+    color: white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Agenda de Contatos</h1>
+
+    <input type="text" id="filtro" placeholder="Filtrar contatos">
+
+    <br>
+
+    <input type="text" id="nome" placeholder="Nome">
+    <input type="email" id="email" placeholder="E-mail">
+    <input type="text" id="telefone" placeholder="Telefone">
+    <button class="btn-cadastrar" onclick="salvarCon<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Agenda de Contatos</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    padding: 20px;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+h1 {
+    text-align: center;
+}
+
+input {
+    padding: 8px;
+    margin: 5px;
+}
+
+button {
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn-cadastrar {
+    background-color: green;
+    color: white;
+}
+
+.btn-alterar {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-excluir {
+    background-color: red;
+    color: white;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background-color: #222;
+    color: white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Agenda de Contatos</h1>
+
+    <input type="text" id="filtro" placeholder="Filtrar contatos">
+
+    <br>
+
+    <input type="text" id="nome" placeholder="Nome">
+    <input type="email" id="email" placeholder="E-mail">
+    <input type="text" id="telefone" placeholder="Telefone">
+    <button class="btn-cadastrar" onclick="salvarContato()">Cadastrar</button>
+
+    <p>Total de Contatos: <span id="total">0</span></p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Telefone</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="tabelaContatos"></tbody>
+    </table>
+</div>
+
+<script>
+let contatos = JSON.parse(localStorage.getItem("contatos")) || [];
+let editIndex = null;
+
+function atualizarLocalStorage() {
+    localStorage.setItem("contatos", JSON.stringify(contatos));
+}
+
+function atualizarTabela(lista = contatos) {
+    const tabela = document.getElementById("tabelaContatos");
+    tabela.innerHTML = "";
+
+    lista.forEach((contato, index) => {
+        tabela.innerHTML += `
+            <tr>
+                <td>${contato.nome}</td>
+                <td>${contato.email}</td>
+                <td>${contato.telefone}</td>
+                <td>
+                    <button class="btn-alterar" onclick="editarContato(${index})">Alterar</button>
+                    <button class="btn-excluir" onclick="excluirContato(${index})">Excluir</button>
+                </td>
+            </tr>
+        `;
+    });
+
+    document.getElementById("total").innerText = contatos.length;
+}
+
+function salvarContato() {
+    const nome = document.getElementById("nome").value;
+    const email = document.getElementById("email").value;
+    const telefone = document.getElementById("telefone").value;
+
+    if (!nome || !email || !telefone) {
+        alert("Preencha todos os campos!");
+        return;
+    }
+
+    const novoContato = { nome, email, telefone };
+
+    if (editIndex === null) {
+        contatos.push(novoContato);
+    } else {
+        contatos[editIndex] = novoContato;
+        editIndex = null;
+    }
+
+    atualizarLocalStorage();
+    atualizarTabela();
+    limparCampos();
+}
+
+function editarContato(index) {
+    const contato = contatos[index];
+
+    document.getElementById("nome").value = contato.nome;
+    document.getElementById("email").value = contato.email;
+    document.getElementById("telefone").value = contato.telefone;
+
+    editIndex = index;
+}
+
+function excluirContato(index) {
+    if (confirm("Deseja excluir este contato?")) {
+        contatos.splice(index, 1);
+        atualizarLocalStorage();
+        atualizarTabela();
+    }
+}
+
+function limparCampos() {
+    document.getElementById("nome").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("telefone").value = "";
+}
+
+document.getElementById("filtro").addEventListener("keyup", function() {
+    const texto = this.value.toLowerCase();
+    const filtrados = contatos.filter(contato =>
+        contato.nome.toLowerCase().includes(texto)
+    );
+    atualizarTabela(filtrados);
+});
+
+atualizarTabela();
+</script>
+
+</body>
+</html>tato()">Cadastrar</button>
+
+    <p>Total de Contatos: <span id="total">0</span></p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Telefone</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="tabelaContatos"></tbody>
+    </table>
+</div>
+
+<script>
+let contatos = JSON.parse(localStorage.getItem("contatos")) || [];
+let editIndex = null;
+
+function atualizarLocalStorage() {
+    localStorage.setItem("contatos", JSON.stringify(contatos));
+}
+
+function atualizarTabela(lista = contatos) {
+    const tabela = document.getElementById("tabelaContatos");
+    tabela.innerHTML = "";
+
+    lista.forEach((contato, index) => {
+        tabela.innerHTML += `
+            <tr>
+                <td>${contato.nome}</td>
+                <td>${contato.email}</td>
+                <td>${contato.telefone}</td>
+                <td>
+                    <button class="btn-alterar" onclick="editarContato(${index})">Alterar</button>
+                    <button class="btn-excluir" onclick="excluirContato(${index})">Excluir</button>
+                </td>
+            </tr>
+        `;
+    });
+
+    document.getElementById("total").innerText = contatos.length;
+}
+
+function salvarContato() {
+    const nome = document.getElementById("nome").value;
+    const email = document.getElementById("email").value;
+    const telefone = document.getElementById("telefone").value;
+
+    if (!nome || !email || !telefone) {
+        alert("Preencha todos os campos!");
+        return;
+    }
+
+    const novoContato = { nome, email, telefone };
+
+    if (editIndex === null) {
+        contatos.push(novoContato);
+    } else {
+        contatos[editIndex] = novoContato;
+        editIndex = null;
+    }
+
+    atualizarLocalStorage();
+    atualizarTabela();
+    limparCampos();
+}
+
+function editarContato(index) {
+    const contato = contatos[index];
+
+    document.getElementById("nome").value = contato.nome;
+    document.getElementById("email").value = contato.email;
+    document.getElementById("telefone").value = contato.telefone;
+
+    editIndex = index;
+}
+
+function excluirContato(index) {
+    if (confirm("Deseja excluir este contato?")) {
+        contatos.splice(index, 1);
+        atualizarLocalStorage();
+        atualizarTabela();
+    }
+}
+
+function limparCampos() {
+    document.getElementById("nome").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("telefone").value = "";
+}
+
+document.getElementById("filtro").addEventListener("keyup", function() {
+    const texto = this.value.toLowerCase();
+    const filtrados = contatos.filter(contato =>
+        contato.nome.toLowerCase().includes(texto)
+    );
+    atualizarTabela(filtrados);
+});
+
+atualizarTabela();
+</script>
+
+</body>
+</html>
